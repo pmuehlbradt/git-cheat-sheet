@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Git Workflow — From file to remote</title>
+    <meta name="description" content="Understand where your changes live and how git add, commit, push, and pull move them through your workflow." />
+    <link rel="stylesheet" href="css/style.css" />
+    <script defer src="js/script.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <nav class="sidebar" aria-label="Git workflows"><a class="nav-brand" href="#overview"><span class="git-mark" aria-hidden="true">↗</span> Git workflows</a><p class="nav-caption">YOUR VISUAL REFERENCE</p><div class="nav-group"><p>The big picture</p><ul><li><a href="#overview">Four places</a></li><li><a href="#daily-workflow">The daily workflow</a></li><li><a href="#add">Stage changes</a></li><li><a href="#commit">Commit</a></li><li><a href="#push">Push</a></li><li><a href="#pull">Pull</a></li></ul></div><div class="nav-group"><p>Get started</p><ul><li><a href="#clone">Clone a project</a></li><li><a href="#init">Initialize a repo</a></li><li><a href="#branch">Branches</a></li></ul></div><div class="nav-group"><p>Inspect</p><ul><li><a href="#status">Status</a></li><li><a href="#diff">Compare changes</a></li><li><a href="#log">Commit history</a></li></ul></div><div class="nav-group"><p>Adjust & undo</p><ul><li><a href="#unstage">Unstage a file</a></li><li><a href="#amend">Amend a commit</a></li><li><a href="#restore">Discard edits</a></li><li><a href="#revert">Revert a commit</a></li></ul></div><div class="nav-group"><p>Work with others</p><ul><li><a href="#fetch">Fetch updates</a></li><li><a href="#merge">Merge branches</a></li><li><a href="#stash">Stash work</a></li></ul></div></nav>
+    <main id="main-content">
+      <header class="hero">
+        <p class="eyebrow"><span class="git-mark" aria-hidden="true">↗</span> GIT / THE BASICS</p>
+        <h1>Where do your changes go?</h1>
+        <p>Git takes your work from a file on your computer to a shared project history. Here’s how the pieces connect—and what each command actually does.</p>
+      </header>
+
+      <section class="overview" id="overview" aria-labelledby="overview-title">
+        <div class="section-heading"><h2 id="overview-title">Four places. One workflow.</h2><span>Follow your changes →</span></div>
+        <div class="diagram-scroll" tabindex="0" role="region" aria-label="Four stages of the Git workflow. Scroll horizontally on small screens.">
+          <div class="diagram">
+            <div class="location local-label">ON YOUR COMPUTER</div>
+            <div class="location remote-label">ON A SERVER</div>
+            <article class="stage working">
+              <div class="stage-top"><span class="stage-icon" aria-hidden="true">＋</span><span>01</span></div>
+              <h3>Working files</h3><p class="stage-subtitle">Where you create and edit</p>
+              <div class="file-preview"><span aria-hidden="true">▤</span> index.html <span class="file-state">?</span></div>
+              <p>The files in your project folder: new files and files you’ve changed.</p>
+              <span class="stage-note">Edit here · choose what to save next</span>
+            </article>
+            <div class="connector"><code>git add</code><span aria-hidden="true">⟶</span><small>Select changes</small></div>
+            <article class="stage staging">
+              <div class="stage-top"><span class="stage-icon" aria-hidden="true">✓</span><span>02</span></div>
+              <h3>Staging</h3><p class="stage-subtitle">The next commit’s contents</p>
+              <div class="file-preview"><span aria-hidden="true">▤</span> index.html <span class="file-state">A</span></div>
+              <p>The file contents you’ve selected with git add, ready for the next commit.</p>
+              <span class="stage-note">Selected · ready to commit</span>
+            </article>
+            <div class="connector"><code>git commit</code><span aria-hidden="true">⟶</span><small>Save a snapshot</small></div>
+            <article class="stage local">
+              <div class="stage-top"><span class="stage-icon" aria-hidden="true">◉</span><span>03</span></div>
+              <h3>Local repo</h3><p class="stage-subtitle">History on your computer</p>
+              <div class="history-preview" aria-label="Three local commits"><i></i><b></b><i></i><b></b><i class="new-commit"></i><span>main</span></div>
+              <p>Your commit is saved in the repository, with a message and a unique ID.</p>
+              <span class="stage-note">Committed · still local</span>
+            </article>
+            <div class="connector"><code>git push</code><span aria-hidden="true">⟶</span><small>Share commits</small></div>
+            <article class="stage remote">
+              <div class="stage-top"><span class="stage-icon" aria-hidden="true">☁</span><span>04</span></div>
+              <h3>Remote repo</h3><p class="stage-subtitle">Shared project history</p>
+              <div class="history-preview" aria-label="Three shared commits"><i></i><b></b><i></i><b></b><i class="new-commit"></i><span>origin/main</span></div>
+              <p>Your commits are available on a server, such as GitHub, for others to fetch.</p>
+              <span class="stage-note">Pushed · available to the team</span>
+            </article>
+          </div>
+        </div>
+        <p class="diagram-note"><strong>What does staging mean?</strong> <code>git add</code> selects a file’s current contents for the next commit. The file stays in your project folder. A new file is <em>untracked</em> until you add it; an edited tracked file has <em>unstaged changes</em> until you add those changes.</p>
+      </section>
+
+      <section class="details" id="daily-workflow" aria-labelledby="details-title">
+        <div class="section-heading"><h2 id="details-title">What happens at each step</h2><span>A closer look</span></div>
+        <article class="workflow-row" id="add">
+          <div class="row-title"><span class="row-number">01</span><h3>Select your changes</h3><span class="action-label">git add</span></div>
+          <div class="row-explanation"><div class="route"><span class="badge working">Working directory</span><span aria-hidden="true">→</span><span class="badge staging">Staging</span></div><p>Run git add to select a file’s current contents for your next commit. Your file stays where it is; Git keeps a separate copy of the contents you selected.</p><p class="annotation">Edit it again? Run <code>git add</code> again to include the newer changes.</p></div>
+          <div class="command"><pre><code>git add index.html</code></pre><p>Check your selection with <code>git diff --staged</code>.</p></div>
+        </article>
+        <article class="workflow-row" id="commit">
+          <div class="row-title"><span class="row-number">02</span><h3>Save a checkpoint</h3><span class="action-label">git commit</span></div>
+          <div class="row-explanation"><div class="route"><span class="badge staging">Staging</span><span aria-hidden="true">→</span><span class="badge local">Local repo</span></div><p>Record your staged changes as a commit on the current branch. The message explains what changed, and the commit becomes part of your local history.</p><p class="annotation">Only staged changes are included. Your commit stays on your computer until you push.</p></div>
+          <div class="command"><pre><code>git commit -m "Add page layout"</code></pre><p>See your checkpoints with <code>git log --oneline</code>.</p></div>
+        </article>
+        <article class="workflow-row" id="push">
+          <div class="row-title"><span class="row-number">03</span><h3>Share your commits</h3><span class="action-label">git push</span></div>
+          <div class="row-explanation"><div class="route"><span class="badge local">Local repo</span><span aria-hidden="true">→</span><span class="badge remote">Remote repo</span></div><p>Send your local commits to a branch on the remote. Your teammates can now fetch them, and you can open a pull request if your project uses reviews.</p><p class="annotation">Push sends commits. Uncommitted file changes stay on your computer.</p></div>
+          <div class="command"><pre><code>git push -u origin main</code></pre><p>First push: set the upstream with <code>-u</code>. After that, use <code>git push</code>.</p></div>
+        </article>
+        <article class="workflow-row" id="pull">
+          <div class="row-title"><span class="row-number">04</span><h3>Bring changes back</h3><span class="action-label">git pull</span></div>
+          <div class="row-explanation"><div class="route"><span class="badge remote">Remote repo</span><span aria-hidden="true">→</span><span class="badge local">Local repo</span></div><p>Fetch remote commits and integrate them into your current branch, updating your working files. This keeps your local work in sync with the team.</p><p class="annotation"><code>--ff-only</code> stops if the branches have diverged, so you can decide how to reconcile them.</p></div>
+          <div class="command"><pre><code>git pull --ff-only</code></pre><p>Commit or stash your unfinished changes before pulling.</p></div>
+        </article>
+      </section>
+      <section class="workflow-section" id="clone" aria-labelledby="clone-title">
+        <header class="workflow-heading"><p class="eyebrow">Get started</p><h2 id="clone-title">Clone a project</h2><code class="action-label">git clone</code></header>
+        <div class="workflow-content"><p>Get a project that already exists on a server. Clone creates a new folder containing its history and a working copy of its files.</p><div class="command"><pre><code>git clone https://github.com/example/project.git
+cd project</code></pre><p>Replace the example URL with your repository URL.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node remote">Remote repo</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">Local repo</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node working">Working files</span></div><p><strong>What happens:</strong> Git downloads the history, creates a remote called origin, and checks out the default branch. The checked-out files are already tracked.</p><p class="result-note">Clone once to get started. Use pull to update the same clone later.</p></div>
+      </section>
+      <section class="workflow-section" id="init" aria-labelledby="init-title">
+        <header class="workflow-heading"><p class="eyebrow">Start from scratch</p><h2 id="init-title">Initialize a repository</h2><code class="action-label">git init</code></header>
+        <div class="workflow-content"><p>Have a folder with no Git history? Initialize it, then select and commit the files you want to track.</p><div class="command"><pre><code>git init -b main
+git add index.html
+git commit -m &quot;Initial commit&quot;</code></pre><p>Run these commands inside your project folder.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node working">Project folder</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">Empty repository</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">First commit</span></div><p><strong>What happens:</strong> init creates the .git directory. Adding and committing creates your first saved snapshot. A remote is not created automatically.</p><p class="result-note">To connect an existing empty remote: git remote add origin &lt;repository-url&gt;, then git push -u origin main.</p></div>
+      </section>
+      <section class="workflow-section" id="branch" aria-labelledby="branch-title">
+        <header class="workflow-heading"><p class="eyebrow">Work in parallel</p><h2 id="branch-title">Create &amp; switch branches</h2><code class="action-label">git branch / git switch</code></header>
+        <div class="workflow-content"><p>A branch is a name pointing to a commit. Create a branch for a feature, commit your work there, and switch back when you need another line of development.</p><div class="command"><pre><code>git branch
+git switch -c feature/header
+# After committing your work:
+git switch main</code></pre><p>git branch lists local branches; * marks the current branch.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node local">main · A</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">feature/header · A → B</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">main · A</span></div><p><strong>What happens:</strong> The feature branch starts at your current commit. New commits advance that branch. Switching back restores main’s files and changes where the next commit will go.</p><p class="result-note">git branch feature/header creates without switching. Commit or stash unfinished changes before switching if they would conflict.</p></div>
+      </section>
+      <section class="workflow-section" id="status" aria-labelledby="status-title">
+        <header class="workflow-heading"><p class="eyebrow">Check your bearings</p><h2 id="status-title">Inspect the working state</h2><code class="action-label">git status</code></header>
+        <div class="workflow-content"><p>See your branch, staged changes, unstaged changes, and untracked files before you decide what to do next.</p><div class="command"><pre><code>git status
+git status --short</code></pre><p>The short format uses two columns to summarize file changes.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node working">Working files + staging</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node staging">Status report</span></div><p><strong>What happens:</strong> Git reads your current state. In short output, the first column describes staging, the second describes the working tree, and ?? means untracked.</p><p class="result-note">Read-only: your files, staging area, and commit history stay unchanged.</p></div>
+      </section>
+      <section class="workflow-section" id="diff" aria-labelledby="diff-title">
+        <header class="workflow-heading"><p class="eyebrow">Review before saving</p><h2 id="diff-title">Compare your changes</h2><code class="action-label">git diff</code></header>
+        <div class="workflow-content"><p>See the lines added and removed. Pick a comparison for unstaged edits, staged edits, or work on a feature branch.</p><div class="command"><pre><code>git diff
+git diff --staged
+git diff main...feature/header</code></pre><p>In the output, + marks added lines and - marks removed lines.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node working">Two versions</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node staging">Line-by-line comparison</span></div><p><strong>What happens:</strong> git diff compares working files with staging. --staged compares staging with HEAD. The branch example shows feature/header changes since its common ancestor with main.</p><p class="result-note">Read-only. Untracked files do not appear in normal git diff output.</p></div>
+      </section>
+      <section class="workflow-section" id="log" aria-labelledby="log-title">
+        <header class="workflow-heading"><p class="eyebrow">Explore the history</p><h2 id="log-title">Browse saved commits</h2><code class="action-label">git log</code></header>
+        <div class="workflow-content"><p>See the saved checkpoints and how branches connect. Open a commit to inspect its message and patch.</p><div class="command"><pre><code>git log --oneline --graph --decorate --all
+git show HEAD</code></pre><p>HEAD usually points to your current branch’s latest commit.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node local">Saved commits</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">History &amp; patches</span></div><p><strong>What happens:</strong> Git reads commit history. --all includes local and remote-tracking references; git show HEAD displays the latest commit and its changes.</p><p class="result-note">Read-only. Press q to leave the pager if one opens.</p></div>
+      </section>
+      <section class="workflow-section" id="unstage" aria-labelledby="unstage-title">
+        <header class="workflow-heading"><p class="eyebrow">Adjust your selection</p><h2 id="unstage-title">Remove a file from staging</h2><code class="action-label">git restore --staged</code></header>
+        <div class="workflow-content"><p>Staged a file too soon? Remove it from the next commit while keeping its edits on disk. You can add it again when you are ready.</p><div class="command"><pre><code>git restore --staged index.html
+git status</code></pre><p>This command assumes the repository already has a commit.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node staging">Staged changes</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node working">Edits kept in working files</span></div><p><strong>What happens:</strong> Git resets the file’s staged snapshot to HEAD without changing the working file. A newly added file becomes untracked again; edits to a tracked file become unstaged.</p><p class="result-note">Before the first commit, use git rm --cached -- index.html to unstage a newly added file while keeping it on disk.</p></div>
+      </section>
+      <section class="workflow-section" id="amend" aria-labelledby="amend-title">
+        <header class="workflow-heading"><p class="eyebrow">Finish the last checkpoint</p><h2 id="amend-title">Append to the latest commit</h2><code class="action-label">git commit --amend</code></header>
+        <div class="workflow-content"><p>Forgot a file or need to fix your last commit? Stage the extra changes and amend the latest commit.</p><div class="command"><pre><code>git add index.html
+git commit --amend --no-edit</code></pre><p>Omit --no-edit to edit the commit message too.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node staging">Latest commit + staging</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">Replacement commit · new ID</span></div><p><strong>What happens:</strong> Amending replaces the branch’s latest commit with a new commit that includes your staged changes. --no-edit keeps its message.</p><p class="result-note">Use for local, unpushed commits. Amending published work rewrites shared history and requires coordination with your team.</p></div>
+      </section>
+      <section class="workflow-section" id="restore" aria-labelledby="restore-title">
+        <header class="workflow-heading"><p class="eyebrow">Discard an unwanted edit</p><h2 id="restore-title">Discard edits</h2><code class="action-label">git restore</code></header>
+        <div class="workflow-content"><p>Undo edits you haven’t selected with git add. Git restores the file to the version selected for your next commit. If you haven’t staged any changes to this file, it restores the version from your latest commit.</p><div class="command"><pre><code>git diff -- index.html
+git restore -- index.html</code></pre><p>Review with git diff first, then use git restore to discard those unstaged edits.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node working">File with unstaged edits</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node working">File restored · unstaged edits removed</span></div><p><strong>What happens:</strong> Only edits made since the file was last staged are discarded. If you never staged changes to this file, all edits since its latest commit are discarded. This does not stage anything or delete untracked files.</p><p class="result-note">This discards edits that may have no saved copy. Stash them first if you might need them later.</p></div>
+      </section>
+      <section class="workflow-section" id="revert" aria-labelledby="revert-title">
+        <header class="workflow-heading"><p class="eyebrow">Undo a saved change</p><h2 id="revert-title">Reverse a commit</h2><code class="action-label">git revert</code></header>
+        <div class="workflow-content"><p>Undo a saved change by adding a commit that reverses it. The original history remains, so this works for commits you have already shared.</p><div class="command"><pre><code>git log --oneline
+git revert HEAD</code></pre><p>Replace HEAD with a commit ID to reverse a specific earlier commit.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node local">A → B</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">A → B → revert B</span></div><p><strong>What happens:</strong> Git applies inverse changes and records a new commit. The original stays in history. Push the new commit to share the undo.</p><p class="result-note">Start with a clean working tree. For conflicts, resolve and stage the files, then git revert --continue. Use git revert --abort to cancel.</p></div>
+      </section>
+      <section class="workflow-section" id="fetch" aria-labelledby="fetch-title">
+        <header class="workflow-heading"><p class="eyebrow">Inspect remote updates</p><h2 id="fetch-title">Download without integrating</h2><code class="action-label">git fetch</code></header>
+        <div class="workflow-content"><p>Download new remote commits before deciding how to integrate them. Fetch lets you inspect what changed first.</p><div class="command"><pre><code>git fetch origin
+git log --oneline HEAD..origin/main</code></pre><p>The log lists commits on origin/main not reachable from HEAD.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node remote">Remote repo</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">Remote-tracking refs · origin/main</span></div><p><strong>What happens:</strong> Commits are downloaded and remote-tracking references update. Your current local branch, staged changes, and working files stay as they were.</p><p class="result-note">Fetch downloads only. Pull fetches and then integrates into the current branch.</p></div>
+      </section>
+      <section class="workflow-section" id="merge" aria-labelledby="merge-title">
+        <header class="workflow-heading"><p class="eyebrow">Bring work together</p><h2 id="merge-title">Merge a feature branch</h2><code class="action-label">git merge</code></header>
+        <div class="workflow-content"><p>When your feature is committed, switch to the branch that should receive it, then merge the feature branch.</p><div class="command"><pre><code>git switch main
+git merge feature/header</code></pre><p>Start with a clean working tree: commit or stash unfinished changes.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node local">main + feature/header</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">Updated main</span></div><p><strong>What happens:</strong> Git advances main directly when possible (a fast-forward), or creates a merge commit joining both histories. Working files update to the merged result.</p><p class="result-note">For conflicts, edit the marked files, git add the resolved files, then git commit. Use git merge --abort to cancel an in-progress merge.</p></div>
+      </section>
+      <section class="workflow-section" id="stash" aria-labelledby="stash-title">
+        <header class="workflow-heading"><p class="eyebrow">Pause unfinished work</p><h2 id="stash-title">Save changes for later</h2><code class="action-label">git stash</code></header>
+        <div class="workflow-content"><p>Temporarily set aside unfinished tracked changes, switch tasks, then restore them when you return to the original branch.</p><div class="command"><pre><code>git stash push -m &quot;Header in progress&quot;
+# Back on your original branch later:
+git stash apply
+# Check the restored work, then:
+git stash drop</code></pre><p>git stash list shows entries. Add -u to push to include untracked files.</p></div></div>
+        <div class="workflow-result"><div class="workflow-flow"><span class="flow-node working">Uncommitted changes</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node local">Local stash</span><span class="flow-arrow" aria-hidden="true">→</span><span class="flow-node working">Working files again</span></div><p><strong>What happens:</strong> Stash stores tracked staged and unstaged changes locally and resets them from the working state. apply restores changes and retains the entry; drop removes the latest entry.</p><p class="result-note">Applying can cause conflicts. Check your restored work before dropping the entry. Use apply --index to also restore its staged state.</p></div>
+      </section>
+      <aside class="remember"><span class="status-icon" aria-hidden="true">ⓘ</span><p><strong>Not sure where you are?</strong> Run <code>git status</code>. It shows your branch, staged changes, modified files, and untracked files.</p></aside>
+      <footer><span>Git workflow / a visual reference</span><span>Examples assume an existing repository, a remote called <code>origin</code>, and a branch called <code>main</code>, unless the section says otherwise.</span></footer>
+      <p class="sr-only" id="copy-status" role="status"></p>
+    </main>
+  </body>
+</html>
